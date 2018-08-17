@@ -36,12 +36,12 @@ interface TooltipsQueue {
     fun onBackPressedHandled(): Boolean
 
     /**
-     * Starting showing tooltips
+     * Start showing tooltips if queue is PAUSED, otherwise do nothing
      */
     fun start()
 
     /**
-     * Stopping queue and posting EmptyTooltip to hide current
+     * Stop queue and post EmptyTooltip to hide current if queue is RUNNING, otherwise do nothing
      */
     fun stop()
 
