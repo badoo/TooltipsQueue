@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.badoo.tooltipsqueue.EmptyTooltip
 import com.badoo.tooltipsqueue.TooltipsQueue
-import com.badoo.tooltipsqueue.TooltipsQueueImpl
+import com.badoo.tooltipsqueue.PriorityTooltipsQueue
 
 class MainActivity : AppCompatActivity() {
 
-    private val queue: TooltipsQueue = TooltipsQueueImpl()
+    private val queue: TooltipsQueue = PriorityTooltipsQueue()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

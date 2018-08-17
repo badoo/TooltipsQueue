@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class TooltipsQueueImplStrategiesTest {
+class PriorityTooltipsQueueStrategiesTest {
 
     private lateinit var queue: TooltipsQueue
     private lateinit var allTooltips: TestObserver<Tooltip>
@@ -83,7 +83,7 @@ class TooltipsQueueImplStrategiesTest {
     }
 
     private fun initQueue(strategy: QueueStrategy) {
-        queue = TooltipsQueueImpl(strategy)
+        queue = PriorityTooltipsQueue(strategy)
         allTooltips = TestObserver()
         queue.onShow().subscribe(allTooltips)
     }

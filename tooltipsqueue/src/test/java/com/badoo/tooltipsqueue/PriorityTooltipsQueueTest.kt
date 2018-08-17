@@ -13,14 +13,14 @@ import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class TooltipsQueueImplTest {
+class PriorityTooltipsQueueTest {
 
     private lateinit var queue: TooltipsQueue
     private lateinit var allTooltips: TestObserver<Tooltip>
 
     @Before
     fun setup() {
-        queue = TooltipsQueueImpl()
+        queue = PriorityTooltipsQueue()
         allTooltips = TestObserver()
         queue.onShow().subscribe(allTooltips)
     }
@@ -317,6 +317,23 @@ class TooltipsQueueImplTest {
 
         allTooltips.assertValueCount(1)
         allTooltips.assertValueAt(0) { isSameClass(EmptyTooltip, it) }
+    }
+
+    @Test
+    fun whenAddTooltipInTheMiddleOfRemovingLowPriority_HighestPriorityShownFirst() {
+        queue.add(LowTooltip())
+        queue.start()
+        queue.add(MiddleTooltip(), HighTooltip())
+        queue.remove()
+        queue.remove()
+
+        allTooltips.assertValueCount(6)
+        allTooltips.assertValueAt(0) { isSameClass(EmptyTooltip, it) }
+        allTooltips.assertValueAt(1) { isSameClass(LowTooltip(), it) }
+        allTooltips.assertValueAt(2) { isSameClass(EmptyTooltip, it) }
+        allTooltips.assertValueAt(3) { isSameClass(HighTooltip(), it) }
+        allTooltips.assertValueAt(4) { isSameClass(EmptyTooltip, it) }
+        allTooltips.assertValueAt(5) { isSameClass(MiddleTooltip(), it) }
     }
 
 }

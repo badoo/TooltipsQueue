@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
 import kotlin.let
 import io.reactivex.subjects.BehaviorSubject
 
-class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) : TooltipsQueue {
+class PriorityTooltipsQueue(private val strategy: QueueStrategy = DefaultStrategy) : TooltipsQueue {
 
     /*
      * Inside this subject always hidden exact state of tooltip on the screen
@@ -24,14 +24,15 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
         second.type.priority - first.type.priority
     })
 
-    private var queueState = QueueState.BACKGROUND
+    private var removingLowPriority = false
+    private var queueState = QueueState.PAUSED
     private val timerHandler = Handler()
     private val showRunnable = Runnable {
         val tooltip = queue.poll()
         if (tooltip != null) {
             behaviorSubject.onNext(tooltip.type)
         } else {
-            Log.e(this@TooltipsQueueImpl.javaClass.simpleName,
+            Log.e(this@PriorityTooltipsQueue.javaClass.simpleName,
                     "Shouldn't occur. Post issue how to achieve.")
         }
     }
@@ -51,6 +52,9 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
             queue.removeAll { it.type::class.java == clazz }
         }
         val current = behaviorSubject.valueNonNull
+        if (tooltip == null || current::class.java == tooltip) {
+            removingLowPriority = false
+        }
         if (tooltip == null || current::class.java == tooltip || removingHead) {
             behaviorSubject.onNext(EmptyTooltip)
             startTimer()
@@ -68,16 +72,16 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
 
     override fun start() {
         onMainThread()
-        if (queueState != QueueState.FOREGROUND) {
-            queueState = QueueState.FOREGROUND
+        if (queueState != QueueState.RUNNING) {
+            queueState = QueueState.RUNNING
             startTimer()
         }
     }
 
     override fun stop() {
         onMainThread()
-        if (queueState != QueueState.BACKGROUND) {
-            queueState = QueueState.BACKGROUND
+        if (queueState != QueueState.PAUSED) {
+            queueState = QueueState.PAUSED
             timerHandler.removeCallbacks(showRunnable)
             behaviorSubject.onNext(EmptyTooltip)
         }
@@ -126,7 +130,7 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
 
     private fun compareWithShowing(added: Tooltip) {
         val showing = behaviorSubject.valueNonNull
-        if (showing.priority <= added.priority) {
+        if (showing.priority <= added.priority && !removingLowPriority) {
             queue.add(TooltipParams(added, added.delayMillis))
             val reputDelay = strategy.putInQueueDelayMillis(showing)
             if (showing != EmptyTooltip
@@ -137,6 +141,7 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
             }
             if (showing != EmptyTooltip) {
                 // If we are showing something, we should notify clients to hide current
+                removingLowPriority = true
                 behaviorSubject.onNext(EmptyTooltip)
             } else {
                 startTimer()
@@ -149,7 +154,7 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
 
     private fun startTimer() {
         timerHandler.removeCallbacks(showRunnable)
-        if (queueState == QueueState.FOREGROUND && queue.isNotEmpty()) {
+        if (queueState == QueueState.RUNNING && queue.isNotEmpty()) {
             timerHandler.postDelayed(showRunnable, queue.first().delayMillis)
         }
     }
@@ -170,7 +175,7 @@ class TooltipsQueueImpl(private val strategy: QueueStrategy = DefaultStrategy) :
         get() = this.value!!
 
     private enum class QueueState {
-        BACKGROUND, FOREGROUND;
+        PAUSED, RUNNING
     }
 
     private class TooltipParams(val type: Tooltip, val delayMillis: Long)
