@@ -281,7 +281,7 @@ class PriorityTooltipsQueueTest {
     fun queueState_returnPendingTooltips() {
         queue.add(LowTooltip(), MiddleTooltip())
 
-        assertArrayEquals(queue.queueState().toTypedArray(), arrayOf(MiddleTooltip(), LowTooltip()))
+        assertArrayEquals(queue.pendingTooltips().toTypedArray(), arrayOf(MiddleTooltip(), LowTooltip()))
     }
 
     @Test
@@ -289,7 +289,7 @@ class PriorityTooltipsQueueTest {
         queue.add(LowTooltip(), MiddleTooltip())
         queue.start()
 
-        assertArrayEquals(queue.queueState().toTypedArray(), arrayOf(LowTooltip()))
+        assertArrayEquals(queue.pendingTooltips().toTypedArray(), arrayOf(LowTooltip()))
     }
 
     @Test
@@ -298,7 +298,7 @@ class PriorityTooltipsQueueTest {
         queue.start()
         queue.remove()
 
-        assertArrayEquals(queue.queueState().toTypedArray(), arrayOf())
+        assertArrayEquals(queue.pendingTooltips().toTypedArray(), arrayOf())
     }
 
     @Test
@@ -306,7 +306,7 @@ class PriorityTooltipsQueueTest {
         queue.add(LowTooltip(), MiddleTooltip())
         queue.clear()
 
-        assertArrayEquals(queue.queueState().toTypedArray(), arrayOf())
+        assertArrayEquals(queue.pendingTooltips().toTypedArray(), arrayOf())
     }
 
     @Test

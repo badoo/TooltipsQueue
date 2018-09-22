@@ -1,13 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded,HardcodedText,LabelFor,ButtonStyle"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/money_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentLeft="true"
+        android:text="Money View"
+        android:layout_marginTop="32dp"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_marginLeft="16dp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/priority_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Gift View"
+        android:layout_marginTop="32dp"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_marginRight="16dp"/>
+
+    <LinearLayout
+        android:id="@+id/functional_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/send_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send money"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="amount"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/send_money_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="10"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="delay(s)"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/send_money_delay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="0"
+                android:inputType="number"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/show_low_priority"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show low priority" />
+
+            <Button
+                android:id="@+id/show_high_priority"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Show high priority"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
