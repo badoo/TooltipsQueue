@@ -8,7 +8,9 @@ interface TooltipsQueue {
      * Return tooltip that should be shown now.
      *
      * In case when you receive tooltip and can't show it(keyboard opened etc),
-     * you should put this tooltip back inside queue with some delay, so queue will retry to show it later
+     * you should put this tooltip back inside queue with some delay, so queue will retry to show it later,
+     * If you receive EmptyTooltip, you should hide current one(if you have such) and notify queue
+     * with remove() method, so queue will post next Tooltip
      */
     fun onShow(): Observable<Tooltip>
 
@@ -52,10 +54,8 @@ interface TooltipsQueue {
 
     /**
      * Return all pending tooltips, that weren't shown.
-     * Useful to put pending tooltips in bundle in case of activity destroy
-     *
-     * doesn't change state of queue
+     * Useful to put pending tooltips in storage in case of activity destroy
      */
-    fun queueState(): List<Tooltip>
+    fun pendingTooltips(): List<Tooltip>
 
 }

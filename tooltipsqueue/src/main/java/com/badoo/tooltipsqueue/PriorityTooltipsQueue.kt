@@ -93,7 +93,7 @@ class PriorityTooltipsQueue(private val strategy: QueueStrategy = DefaultStrateg
         queue.clear()
     }
 
-    override fun queueState() = ArrayList<Tooltip>(queue.map { it.type })
+    override fun pendingTooltips() = ArrayList<Tooltip>(queue.map { it.type })
 
     private fun needToIgnoreAdded(tooltip: Tooltip): Boolean {
         // If we have such tooltip in queue or subject -> ignoring it

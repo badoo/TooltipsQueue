@@ -22,4 +22,8 @@ dependencies {
     implementation project(':tooltipsqueue')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.17'
+
+    // You can use any UI tooltip implementation, this was used just for sample
+    implementation 'com.github.douglasjunior:android-simple-tooltip:0.2.2'
 }
