@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (!queue.onBackPressedHandled()) {
+        if (!queue.onBackPressed()) {
             super.onBackPressed()
         }
     }

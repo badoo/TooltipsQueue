@@ -61,7 +61,7 @@ class PriorityTooltipsQueue(private val strategy: QueueStrategy = DefaultStrateg
         }
     }
 
-    override fun onBackPressedHandled(): Boolean {
+    override fun onBackPressed(): Boolean {
         onMainThread()
         val isShowing = behaviorSubject.valueNonNull != EmptyTooltip
         if (isShowing) {
@@ -115,6 +115,7 @@ class PriorityTooltipsQueue(private val strategy: QueueStrategy = DefaultStrateg
     }
 
     private fun add(tooltip: Tooltip) {
+        validateTooltip(tooltip::class.java)
         if (needToIgnoreAdded(tooltip)) {
             return
         }
