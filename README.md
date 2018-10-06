@@ -34,39 +34,38 @@ implementation 'com.github.badoo.tooltipsqueue:tooltipsqueue:0.1.0'
 --->
 ## How to use
 1. You should call start/stop method on queue during activity lifecycle events, so queue will be able to stop showing tooltips in background.
-```kotlin
-override fun onStart() {
-    super.onStart()
-    queue.start()
-}
-override fun onStop() {
-    super.onStop()
-    queue.stop()
-}
-```
+    ```kotlin
+    override fun onStart() {
+        super.onStart()
+        queue.start()
+    }
+    override fun onStop() {
+        super.onStop()
+        queue.stop()
+    }
+    ```
 2. You should add to queue tooltips(you can do this in started/stopped state it doesn't really matter):
-```kotlin
-queue.add(LowPriorityTooltip())
-queue.add(HighPriorityTooltip())
-```
+    ```kotlin
+    queue.add(LowPriorityTooltip())
+    queue.add(HighPriorityTooltip())
+    ```
 3. You need to subscribe to showing tooltips and show, when you receive specific type from queue:
-```kotlin
-queue.onShow().subscribe {
-    when (it) {
-        is HighPriorityTooltip -> showHighPriorityTooltip()
-        is LowPriorityTooltip -> showLowPriorityTooltip()
-        EmptyTooltip -> tooltip?.dismiss()
-}
-```
-We will talk about `EmptyTooltip` a little bit later.
-
+    ```kotlin
+    queue.onShow().subscribe {
+        when (it) {
+            is HighPriorityTooltip -> showHighPriorityTooltip()
+            is LowPriorityTooltip -> showLowPriorityTooltip()
+            EmptyTooltip -> tooltip?.dismiss()
+    }
+    ```
+    We will talk about `EmptyTooltip` a little bit later.
 4. After dismissing tooltip you should always notify queue that you processed with showing current one and now ready to process next items. So it mostly will look like:
-```kotlin
-.onDismissListener {
-    queue.remove()
-}
-```
-Or something similar. Don't forget to do this, otherwise queue will not post any new tooltips.
+    ```kotlin
+    .onDismissListener {
+        queue.remove()
+    }
+    ```
+    Or something similar. Don't forget to do this, otherwise queue will not post any new tooltips.
 
 Basically that's all you need to know to work with `TooltipsQueue` in simplest way. Your tooltips will be shown one by one, queue will be stopped during going in background, and you can have any fancy animations that you want. But let's discuss what else you can do with the library.
 
