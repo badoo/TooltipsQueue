@@ -30,12 +30,10 @@ interface TooltipsQueue {
 
     /**
      * If currently you have tooltip on this screen, EmptyTooltip will be posted
-     * So it can help with implementing functionality with hiding tooltips after press on back button
-     *
-     * state of queue can be changed
-     * @return - true if is showing tooltip now, false otherwise
+     * Can be used for implementing functionality with hiding tooltips after press on back button
+     * @return - true (with EmptyTooltip posting) if is showing tooltip now, false otherwise
      */
-    fun onBackPressedHandled(): Boolean
+    fun onBackPressed(): Boolean
 
     /**
      * Start showing tooltips if queue is PAUSED, otherwise do nothing
@@ -53,8 +51,7 @@ interface TooltipsQueue {
     fun clear()
 
     /**
-     * Return all pending tooltips, that weren't shown.
-     * Useful to put pending tooltips in storage in case of activity destroy
+     * @return - all pending tooltips, that weren't shown.
      */
     fun pendingTooltips(): List<Tooltip>
 

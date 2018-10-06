@@ -3,7 +3,6 @@ package com.badoo.tooltipsqueue
 import io.reactivex.observers.TestObserver
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -15,13 +14,10 @@ import java.util.concurrent.TimeUnit
 @Config(manifest = Config.NONE)
 class PriorityTooltipsQueueTest {
 
-    private lateinit var queue: TooltipsQueue
-    private lateinit var allTooltips: TestObserver<Tooltip>
+    private val queue: TooltipsQueue = PriorityTooltipsQueue()
+    private val allTooltips: TestObserver<Tooltip> = TestObserver()
 
-    @Before
-    fun setup() {
-        queue = PriorityTooltipsQueue()
-        allTooltips = TestObserver()
+    init {
         queue.onShow().subscribe(allTooltips)
     }
 
@@ -196,7 +192,7 @@ class PriorityTooltipsQueueTest {
     fun whenOnBackPressedWithEmptyTooltip_falseWillReturn() {
         queue.start()
 
-        assertEquals(false, queue.onBackPressedHandled())
+        assertEquals(false, queue.onBackPressed())
         assertEquals(1, allTooltips.valueCount())
     }
 
@@ -205,14 +201,14 @@ class PriorityTooltipsQueueTest {
         queue.start()
         queue.add(LowTooltip())
 
-        assertEquals(true, queue.onBackPressedHandled())
+        assertEquals(true, queue.onBackPressed())
     }
 
     @Test
     fun whenOnBackPressed_emptyWillBePosted() {
         queue.start()
         queue.add(LowTooltip())
-        queue.onBackPressedHandled()
+        queue.onBackPressed()
 
         allTooltips.assertValueAt(2) { isSameClass(EmptyTooltip, it) }
     }
@@ -222,6 +218,11 @@ class PriorityTooltipsQueueTest {
         queue.add(LowTooltip())
         queue.start()
         queue.remove(EmptyTooltip::class.java)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun whenAddEmpty_exceptionWillBeThrown() {
+        queue.add(EmptyTooltip)
     }
 
     @Test
