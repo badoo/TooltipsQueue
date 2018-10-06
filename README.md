@@ -59,6 +59,7 @@ queue.onShow().subscribe {
 }
 ```
 We will talk about `EmptyTooltip` a little bit later.
+
 4. After dismissing tooltip you should always notify queue that you processed with showing current one and now ready to process next items. So it mostly will look like:
 ```kotlin
 .onDismissListener {
